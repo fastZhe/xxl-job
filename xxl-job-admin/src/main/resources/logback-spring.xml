@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false" scan="true" scanPeriod="1 seconds">
 
+    <springProperty scope="context" name="log.level" source="log.level"/>
+    <springProperty scope="context" name="log.path" source="log.path"/>
+
     <contextName>logback</contextName>
-    <property name="log.path" value="/data/applogs/xxl-job/xxl-job-executor-sample-springboot.log"/>
+<!--    <property name="log.pathfile" value="${log.path}/xxl-job-admin.log"/>-->
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -21,7 +24,7 @@
         </encoder>
     </appender>
 
-    <root level="info">
+    <root level="${log.level}">
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </root>
