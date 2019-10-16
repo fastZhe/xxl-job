@@ -53,6 +53,9 @@ public interface XxlJobLogDao {
 
 	public List<Long> findFailJobLogIds(@Param("pagesize") int pagesize);
 
+	public List<Long> findExcutorkill9JobLogIds(@Param("pagesize") int pagesize);
+
+
 	public int updateAlarmStatus(@Param("logId") long logId,
 								 @Param("oldAlarmStatus") int oldAlarmStatus,
 								 @Param("newAlarmStatus") int newAlarmStatus);

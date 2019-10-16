@@ -229,6 +229,17 @@
 		ORDER BY id ASC
 	</select>
 
+
+	<select id="findExcutorkill9JobLogIds" resultType="long" >
+		select id from xxl_job_log where handle_code=0
+		and trigger_code=200
+		and executor_address not in (select registry_value from xxl_job_registry)
+		AND `alarm_status` = 0
+		ORDER BY id ASC
+	</select>
+
+
+
 	<update id="updateAlarmStatus" >
 		UPDATE xxl_job_log
 		SET

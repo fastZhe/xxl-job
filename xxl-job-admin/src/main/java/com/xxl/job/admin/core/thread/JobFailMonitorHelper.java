@@ -7,16 +7,14 @@ import com.xxl.job.admin.core.model.XxlJobLog;
 import com.xxl.job.admin.core.trigger.TriggerTypeEnum;
 import com.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.core.biz.model.ReturnT;
+import com.xxl.job.core.handler.IJobHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import javax.mail.internet.MimeMessage;
 import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -46,6 +44,18 @@ public class JobFailMonitorHelper {
 				while (!toStop) {
 					try {
 
+						// deal executor down job  ,update job log
+						// handle_time=new Date()  handle_code=IJobHandler.FAIL.code handle_msg=executor Already been  killed
+						List<Long> LogIds = XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().findExcutorkill9JobLogIds(500);
+						for(long curId:LogIds){
+							XxlJobLog log = XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().load(curId);
+							log.setHandleTime(new Date());
+							log.setHandleCode(IJobHandler.FAIL.getCode());
+							log.setHandleMsg("executor Already been  killed");
+							XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().updateHandleInfo(log);
+
+						}
+
 						List<Long> failLogIds = XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().findFailJobLogIds(1000);
 						if (failLogIds!=null && !failLogIds.isEmpty()) {
 							for (long failLogId: failLogIds) {
@@ -57,6 +67,8 @@ public class JobFailMonitorHelper {
 								}
 								XxlJobLog log = XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().load(failLogId);
 								XxlJobInfo info = XxlJobAdminConfig.getAdminConfig().getXxlJobInfoDao().loadById(log.getJobId());
+
+
 
 								// 1、fail retry monitor
 								if (log.getExecutorFailRetryCount() > 0) {
