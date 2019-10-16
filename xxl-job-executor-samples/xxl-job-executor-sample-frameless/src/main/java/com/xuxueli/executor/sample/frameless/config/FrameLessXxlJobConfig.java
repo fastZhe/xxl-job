@@ -32,6 +32,13 @@ public class FrameLessXxlJobConfig {
      */
     public void initXxlJobExecutor() {
 
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                getInstance().destoryXxlJobExecutor();
+            }
+        }));
+
         // registry jobhandler
         XxlJobExecutor.registJobHandler("demoJobHandler", new DemoJobHandler());
         XxlJobExecutor.registJobHandler("shardingJobHandler", new ShardingJobHandler());
